@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.4.0.js"></script>
+</head>
+
+             <div class="container pt-5">
+                    <div class="row">
+                        <div class="col-2 border-right Bg-light">
+                            <h3>Użytkownicy</h3>
+                            <div id="users"></div>
+                        </div>
+                        <div class="col-4" id="Informacje">
+                            <h3>Dane użytkownika</h3>
+                            <p>Id: <span id="user-name"></span></p>
+                            <p> Wiek: <span id="user-age"></span></p>
+                            <button class="btn btn-danger" id="user-delete-btn">Usun</button>
+                            <button class="btn btn-info" id="user-edition-btn">Edytuj</button>
+                        </div>  
+        <div class="col-4" id="Edition">
+            <h2>Edycja Uzytkownika</h2>
+            <form id="user">
+                Imię: 
+                <br>
+                <input type="text" name="first_name" id="first-name" class="form-control">
+                <br>
+                Nazwisko:
+                <br>
+                <input type="text" name="last_name" id="last-name" class="form-control">
+                <br>
+                Wiek: 
+                <br>
+                <input type="number" name="age" id="age" class="form-control">
+                <br>
+                <button type="submit" id="btn_btn_info" class="btn btn-info">Zapisz</button>   
+                <button class="btn btn-danger" id="btn-back">Anuluj</button>
+            </form>
+        </div>
+        </div>
+        </div>
+        <script>
+            $.ajax({
+                method: 'GET',
+                url: 'http://btml.cba.pl/ajax/users.getALL.php',
+                success: funtion(data){
+                    console.log(data);
+                    data,forEach(function(el));
+                }
+               
+                
+            })
+           
+
+        // $("#Edition").hide();
+        // $("#user-edition-btn").on("click", function(e) {
+        //     e.preventDefault();
+        //     $("#Edition").show();
+        //     $("#Informacje").hide();
+        // })
+
+        // $("#btn-back").on("click", function (e) {
+        //     e.preventDefault();
+        //     $("#Edition").hide();
+        //     $("#Informacje").show();
+        </script>
+ <script>   
+        $.ajax({
+            url:"http://btlm.cba.pl/ajax/users/getByID.php?id=2",
+            success: function(data) {
+               
+                    console.log("imie: " + data.first_name);
+            }
+        })
+        $.ajax({
+                url: "http://btlm.cba.pl/ajax/users/getById.php?id=2",
+                success: function(data){
+                    $("#user-id").text(data.id);
+                    $("#user-name").text(data.first_name + " " + data.last_name);
+                    $("#user-age").text(data.age);
+                }
+            })
+
+        $.ajax({
+                url: "http://btlm.cba.pl/ajax/users/getAll.php",
+                success: function(data){
+                    var $usersList = $("#users");
+                    data.forEach(function(el) {
+                        var $newEl = $("<button  class = 'btn btn-secondary btn-block user-button'></button");
+                        $newEl.text(el.first_name +" "+ el.last_name);
+                        $newEl.data("id",el.id);
+                        $usersList.append($newEl);
+                    })
+                }
+            });
+            $("#users").on("click", ".user-button", function() {
+                var id = $(this).data("id");
+                var $button = $(this);
+
+                     $.ajax({
+                url: "http://btlm.cba.pl/ajax/users/getById.php?id="+id,
+                success: function(data){
+                    $("#user-id").text(data.id);
+                    $("#user-name").text(data.first_name + " " + data.last_name);
+                    $("#user-age").text(data.age);
+                    $("#user-delete-btn").data("id",data.id);
+                    $(".user-button").removeClass("user-active active");
+                    $button.addClass("user-active active");
+                    $("#first-name").val(data.first_name);
+                    $("#last-name").val(data.last_name);   
+                    $("#age").val(data.age);
+                    $("#btn_btn_info").data("id",data.id);
+                }
+            })
+       })
+
+       $("#user-delete-btn").on("click", function(e) {
+           e.preventDefault();
+           var id = $(this).data("id");
+           console.log(id);
+           $.ajax({
+               method: "DELETE",
+               url: "http://btlm.cba.pl/ajax/users/deleteById.php?id=" + id,
+               success: function(data) {
+                   console.log(data.message);
+                   $(".user-active").remove();
+                   $("#user-id").text("");
+                    $("#user-name").text("");
+                    $("#user-age").text("");
+                    $("#user-delete-btn").data("id", 0);      
+              
+                   }
+           })
+           $.ajax({
+               
+               method: "PUT",
+               url: "http://btlm.cba.pl/ajax/users/editById.php?id=" + id,
+               data: $form.serialize(),
+               success: function(response) {
+                   console.log(response);
+               }
+           })
+
+       });
+</script>
+ <!-- <input type="text" name="first-name" id="first-name">
+        <input type="text" name="last-name" id="last-name">
+        <input type="number" name="age" id="age">
+         <div class="container pt-5">
+                <div class="row">
+                    <div class="col-2 border-right Bg-light">
+                        <h3>Użytkownicy</h3>
+                        <div id="users"></div>
+                    </div>
+                    <div class="col-10">
+                        <h3>Dane użytkownika</h3>
+                        <p>Id: <span id="user-name"></span></p>
+                        <p> Wiek: <span id="user-age"></span></p>
+                        <button id="usun">usuń</button>
+                    </div>
+                </div>
+            </div>  
+       
+       <p>ID: <span id="user-id"></span></p>
+       <p>Imie i nazwisko: <span id="user-name"></span></p>
+       <p>wiek: <span id="user-age"></span></p> 
+       <div class="container pt-5">
+            <div class="row">
+                <div class="col-2 border-right Bg-light">
+                    <h3>Użytkownicy</h3>
+                    <div id="users"></div>
+                </div>
+                <div id="dane" class="col-10 uzytkownik">
+                    <h3>Dane użytkownika</h3>
+                    <p>Id: <span id="user-id"></span></p>
+                    <p> Wiek: <span id="user-age"></span></p>
+                    <p> Imie i nazwisko: <span id="user-name"></span></p>
+                </div>
+            </div>
+        </div>  -->
+ <!-- <form id="formularz">
+                <p>Imie</p>
+               <input type="text" name="first-name" id="first_name"> <br>
+               <p>nazwisko</p>
+               <input type="text" name="last-name" id="last_name"> <br>
+               <p>wiek</p>
+               <input type="number" name="age" id="age"> <br>
+       
+               <button type="submit">wyslij</button>
+           </form> 
+      
+          
+ 
+    <script>           $.ajax({
+            url:"http://btlm.cba.pl/ajax/users/getByID.php?id=2",
+             success: function(data) {
+               
+                    console.log("imie: " + data.first_name);
+             }
+         })
+         $.ajax({
+                 url: "http://btlm.cba.pl/ajax/users/getById.php?id=2",
+                 success: function(data){
+                    $("#user-id").text(data.id);
+                     $("#user-name").text(data.first_name + " " + data.last_name);
+                     $("#user-age").text(data.age);
+                 }
+             })
+
+         $.ajax({
+                 url: "http://btlm.cba.pl/ajax/users/getAll.php",
+                 success: function(data){
+                    var $usersList = $("#users");
+                     data.forEach(function(el) {
+                         var $newEl = $("<button  class = 'btn btn-secondary btn-block user-button'></button");
+                         $newEl.text(el.first_name +" "+ el.last_name);
+                         $newEl.data("id",el.id);
+                         $usersList.append($newEl);
+                     })
+               }
+            });
+            
+            $("#users").on("click", ".user-button", function() {
+                 var id = $(this).data("id");
+                 console.log(id);
+
+                      $.ajax({
+                 url: "http://btlm.cba.pl/ajax/users/getById.php?id="+id,
+                 success: function(data){
+                     $("#user-delete-btn").data("id",data.id)
+                     $("#user-id").text(data.id);
+                     $("#user-name").text(data.first_name + " " + data.last_name);
+                     $("#user-age").text(data.age);
+                 }
+             })
+             $(this).hide();
+        })
+        $("#user-delete-btn").on("click", function(e) {
+            e.preventDefault();
+           var id = $(this).data("id");
+            $.ajax({
+                method: "DELETE",
+                url: "http://btlm.cba.pl/ajax/users/deleteById.php?id=" + id,
+                success: function(data, status, jqXHR) {
+                    console.log(data.message);
+                }
+            })
+        });
+ 
+
+
+</script>
+ <div class="wrong"></div>
+<div class="succes"> </div>
+<h2>Nowy użytkownik</h2>
+    <form id="user">
+        Imię: 
+        <br>
+        <input type="text" name="first_name" id="first-name">
+        <br>
+        Nazwisko:
+        <br>
+        <input type="text" name="last_name" id="last-name">
+        <br>
+        Wiek: 
+        <br>
+        <input type="number" name="age" id="age">
+        <br>
+        <button type="submit">Dodaj</button>
+    </form>
+<script>
+            
+            $("#user").on("submit", function(evt) {
+                evt.preventDefault();
+                var poprawny = true;
+                var bledy = []
+                var $form = $(this);
+                if ($("#first-name").val().length > 60 || $("#first-name").val().length < 2) {
+                    poprawny = false;
+                    bledy.push("Imię powinno mieć od 2 do 60 znaków.")
+                }
+                if ($("#last-name").val().length > 60 || $("#last-name").val().length < 2) {
+                    poprawny = false;
+                    bledy.push("Nazwisko powinno mieć od 2 do 60 znaków.")
+                }
+                if ($("#age").val() > 150 || $("age").val() < 1) {
+                    poprawny = false;
+                    bledy.push("Wiek powinien być w przedziale od 1 do 150.")
+                }
+                if(poprawny ===true) {
+                    console.log($form.serialize());
+                } else {
+                    bledy.forEach(function(el) {
+                        console.log(el);
+                    })
+                }
+                $.ajax({
+               url: "http://btlm.cba.pl/ajax/users/add.php",
+               method: "POST",
+               data: $form.serialize(),
+               success: function(data, status, jqXHR) {
+                  
+                   if (jqXHR.status === 201) {
+                    console.log(jqXHR.status===201);
+                       console.log(data.message);
+                       
+                   }
+           },
+
+               error: function(jqXHR, textStatus, errorThrown) {
+                   if(jqXHR.status===422){
+                       console.log(jqXHR.status ===422)
+                    console.log(jqXHR.responseJSON);
+                   console.log(textStatus);
+                   console.log(errorThrown);
+                   }
+          
+               }
+            })
+            });   
+</script>   --> 
+    <!-- <input type="text" name="first-name" id="first-name">
+            <input type="text" name="last-name" id="last-name">
+            <input type="number" name="age" id="age">
+             <div class="container pt-5">
+                    <div class="row">
+                        <div class="col-2 border-right Bg-light">
+                            <h3>Użytkownicy</h3>
+                            <div id="users"></div>
+                        </div>
+                        <div class="col-10">
+                            <h3>Dane użytkownika</h3>
+                            <p>Id: <span id="user-name"></span></p>
+                            <p> Wiek: <span id="user-age"></span></p>
+                            <button class="btn btn-danger" id="user-delete-btn">Usuń</button>
+                        </div>
+                    </div>
+                </div>  
+ <script>   
+        $.ajax({
+            url:"http://btlm.cba.pl/ajax/users/getByID.php?id=2",
+            success: function(data) {
+               
+                    console.log("imie: " + data.first_name);
+            }
+        })
+        $.ajax({
+                url: "http://btlm.cba.pl/ajax/users/getById.php?id=2",
+                success: function(data){
+                    $("#user-id").text(data.id);
+                    $("#user-name").text(data.first_name + " " + data.last_name);
+                    $("#user-age").text(data.age);
+                }
+            })
+
+        $.ajax({
+                url: "http://btlm.cba.pl/ajax/users/getAll.php",
+                success: function(data){
+                    var $usersList = $("#users");
+                    data.forEach(function(el) {
+                        var $newEl = $("<button  class = 'btn btn-secondary btn-block user-button'></button");
+                        $newEl.text(el.first_name +" "+ el.last_name);
+                        $newEl.data("id",el.id);
+                        $usersList.append($newEl);
+                    })
+                }
+            });
+            $("#users").on("click", ".user-button", function() {
+                var id = $(this).data("id");
+                console.log(id);
+
+                     $.ajax({
+                url: "http://btlm.cba.pl/ajax/users/getById.php?id="+id,
+                success: function(data){
+                    data
+                    $("#user-id").text(data.id);
+                    $("#user-name").text(data.first_name + " " + data.last_name);
+                    $("#user-age").text(data.age);
+                    $("#user-delete-btn").data("id",data.id);
+                }
+            })
+       })
+       $("#user-delete-btn").on("click", function(e) {
+           e.preventDefault();
+           var id = $(this).data("id");
+           console.log(id);
+           $.ajax({
+               method: "DELETE",
+               url: "http://btlm.cba.pl/ajax/users/deleteById.php?id=" + id,
+               success: function(data, status, jqXHR) {
+                   console.log(data.message);
+               }
+           })
+       });
+</script>  --> 
+</body>
+</html>

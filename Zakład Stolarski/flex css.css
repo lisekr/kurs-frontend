@@ -1,0 +1,41 @@
+html,
+body{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Verdana;
+    height: 100%;
+}
+.maincontainer{
+    background-color:rgb(37, 33, 23);
+    display: flex;
+    min-height: 100% ;
+    flex-direction: column;
+    color: white;
+}
+.header{
+text-align: center;
+}
+.footer{
+    text-align: center;
+}
+.content-container {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+}
+
+.left-menu, .right-menu {
+    background-color: rgb(28, 163, 73);
+    width: 20%;
+    padding: 10px;
+    align-self: center;
+    flex-grow: 1; /* rozszerza dany flex item, by zajmował ewentualne wolne miejsce */
+}
+
+.content {
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(75, 99, 19);
+    text-align: center
+}
